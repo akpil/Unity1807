@@ -10,12 +10,17 @@ public class PlayerController : MonoBehaviour {
     public float rot;
 
     public Transform BoltPos;
-    public Bolt PlayerBolt;
+    [SerializeField]
+    private BoltPool BoltP;
+    public float FireRate;
+    private float currentFrieRate;
 
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody>();
-	}
+        currentFrieRate = 0;
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -30,10 +35,13 @@ public class PlayerController : MonoBehaviour {
                                   0,
                                   Mathf.Clamp(rb.position.z, -4, 10));
 
-        if (Input.GetKey(KeyCode.Space))
+        currentFrieRate -= Time.deltaTime;
+        if (Input.GetKey(KeyCode.Space) && currentFrieRate <=0)
         {
-            Bolt temp = Instantiate(PlayerBolt);
+            Bolt temp = BoltP.GetFromPool();
             temp.transform.position = BoltPos.position;
+            temp.gameObject.SetActive(true);
+            currentFrieRate = FireRate;
         }
 	}
 }
