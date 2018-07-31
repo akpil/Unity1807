@@ -21,9 +21,16 @@ public class PlayerController : MonoBehaviour {
         currentFrieRate = 0;
 
     }
-	
-	// Update is called once per frame
-	void Update () {
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
+    // Update is called once per frame
+    void Update () {
         float horizontal = Input.GetAxis("Horizontal") * Speed;
         float vertical = Input.GetAxis("Vertical") * Speed;
 
@@ -36,7 +43,7 @@ public class PlayerController : MonoBehaviour {
                                   Mathf.Clamp(rb.position.z, -4, 10));
 
         currentFrieRate -= Time.deltaTime;
-        if (Input.GetKey(KeyCode.Space) && currentFrieRate <=0)
+        if (Input.GetButton("Shoot") && currentFrieRate <=0)
         {
             Bolt temp = BoltP.GetFromPool();
             temp.transform.position = BoltPos.position;
