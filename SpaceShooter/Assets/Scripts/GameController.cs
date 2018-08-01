@@ -6,6 +6,8 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     private AsteroidPool AsteroidP;
     [SerializeField]
+    private EnemyPool EnemyP;
+    [SerializeField]
     private int Score;
 	// Use this for initialization
 	void Start () {
@@ -24,9 +26,16 @@ public class GameController : MonoBehaviour {
         while (true)
         {
             yield return new WaitForSeconds(3);
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 5; i++)
             {
                 AsteroidMovement temp = AsteroidP.GetFromPool(Random.Range(0, 3));
+                temp.transform.position = new Vector3(Random.Range(-5f, 5f), 0, 16);
+                temp.gameObject.SetActive(true);
+                yield return new WaitForSeconds(.2f);
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                EnemyController temp = EnemyP.GetFromPool();
                 temp.transform.position = new Vector3(Random.Range(-5f, 5f), 0, 16);
                 temp.gameObject.SetActive(true);
                 yield return new WaitForSeconds(.2f);
