@@ -8,6 +8,8 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     private EnemyPool EnemyP;
     [SerializeField]
+    private EffectPool EffectP;
+    [SerializeField]
     private int Score;
 	// Use this for initialization
 	void Start () {
@@ -16,29 +18,74 @@ public class GameController : MonoBehaviour {
 
     }
 
+    public GameObject GetEffect(eEffecType input)
+    {
+        return EffectP.GetFromPool(input);
+    }
+
     public void AddScore(int value)
     {
         Score += value;
     }
 
+    private void SpawnAsteroid()
+    {
+        AsteroidMovement temp = AsteroidP.GetFromPool(Random.Range(0, 3));
+        temp.transform.position = new Vector3(Random.Range(-5f, 5f), 0, 16);
+        temp.gameObject.SetActive(true);
+    }
+    private void SpawnEnemy()
+    {
+        EnemyController temp = EnemyP.GetFromPool();
+        temp.transform.position = new Vector3(Random.Range(-5f, 5f), 0, 16);
+        temp.gameObject.SetActive(true);
+    }
     private IEnumerator Hazards()
     {
         while (true)
         {
             yield return new WaitForSeconds(3);
-            for (int i = 0; i < 5; i++)
+            int asteroidSpawnCount = 10, enemySpawnCount = 3;
+            while (true)
             {
-                AsteroidMovement temp = AsteroidP.GetFromPool(Random.Range(0, 3));
-                temp.transform.position = new Vector3(Random.Range(-5f, 5f), 0, 16);
-                temp.gameObject.SetActive(true);
-                yield return new WaitForSeconds(.2f);
-            }
-            for (int i = 0; i < 2; i++)
-            {
-                EnemyController temp = EnemyP.GetFromPool();
-                temp.transform.position = new Vector3(Random.Range(-5f, 5f), 0, 16);
-                temp.gameObject.SetActive(true);
-                yield return new WaitForSeconds(.2f);
+                if (asteroidSpawnCount > 0 && enemySpawnCount > 0)
+                {
+                    int randValue = Random.Range(0, 2);
+                    if (randValue == 1)
+                    {
+                        SpawnAsteroid();
+                        asteroidSpawnCount--;
+                        yield return new WaitForSeconds(.2f);
+                    }
+                    else
+                    {
+                        SpawnEnemy();
+                        enemySpawnCount--;
+                        yield return new WaitForSeconds(.2f);
+                    }
+                }
+                else if (enemySpawnCount > 0)
+                {
+                    for (int i = 0; i < enemySpawnCount; i++)
+                    {
+                        SpawnEnemy();
+                        yield return new WaitForSeconds(.2f);
+                    }
+                    break;
+                }
+                else if (asteroidSpawnCount > 0)
+                {
+                    for (int i = 0; i < asteroidSpawnCount; i++)
+                    {
+                        SpawnAsteroid();
+                        yield return new WaitForSeconds(.2f);
+                    }
+                    break;
+                }
+                else
+                {
+                    break;
+                }
             }
         }
     }

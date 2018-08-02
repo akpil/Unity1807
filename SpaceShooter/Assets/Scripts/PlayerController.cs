@@ -15,17 +15,25 @@ public class PlayerController : MonoBehaviour {
     public float FireRate;
     private float currentFrieRate;
 
+    private SoundController soundControl;
+    private GameController control;
+
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody>();
         currentFrieRate = 0;
-
+        soundControl = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
+        control = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
             gameObject.SetActive(false);
+            soundControl.PlayEffectSound(eSoundEffectClip.expPlayer);
+            GameObject effect = control.GetEffect(eEffecType.expPlayer);
+            effect.transform.position = transform.position;
+            effect.SetActive(true);
         }
     }
 
@@ -49,6 +57,7 @@ public class PlayerController : MonoBehaviour {
             temp.transform.position = BoltPos.position;
             temp.gameObject.SetActive(true);
             currentFrieRate = FireRate;
+            soundControl.PlayEffectSound(eSoundEffectClip.shotPlayer);
         }
 	}
 }

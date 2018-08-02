@@ -12,9 +12,17 @@ public class EnemyController : MonoBehaviour {
     private BoltPool BoltP;
     [SerializeField]
     private float Speed;
+
+    private GameController control;
+    private SoundController soundControl;
+    [SerializeField]
+    private int ScoreValue;
+
 	// Use this for initialization
 	void Awake () {
         rb = GetComponent<Rigidbody>();
+        soundControl = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
+        control = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
     }
 
     public void SetBoltPool(BoltPool boltP)
@@ -83,12 +91,35 @@ public class EnemyController : MonoBehaviour {
             bullet.transform.position = BoltPos.position;
             bullet.transform.rotation = BoltPos.rotation;
             bullet.gameObject.SetActive(true);
+            soundControl.PlayEffectSound(eSoundEffectClip.shotEnemy);
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            gameObject.SetActive(false);
 
-	// Update is called once per frame
-	void Update () {
+            soundControl.PlayEffectSound(eSoundEffectClip.expEnemy);
+            GameObject effect = control.GetEffect(eEffecType.expEnemy);
+            effect.transform.position = transform.position;
+            effect.SetActive(true);
+        }
+        if (other.gameObject.CompareTag("PlayerBolt"))
+        {
+            other.gameObject.SetActive(false);
+            control.AddScore(ScoreValue);
+            gameObject.SetActive(false);
+
+            soundControl.PlayEffectSound(eSoundEffectClip.expEnemy);
+            GameObject effect = control.GetEffect(eEffecType.expEnemy);
+            effect.transform.position = transform.position;
+            effect.SetActive(true);
+        }
+    }
+    // Update is called once per frame
+    void Update () {
 		
 	}
 }

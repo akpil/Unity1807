@@ -13,10 +13,15 @@ public class AsteroidMovement : MonoBehaviour {
     private int ScoreValue;
 
     private GameController control;
+    private SoundController soundControl;
 
 	// Use this for initialization
 	void Awake () {
         rb = GetComponent<Rigidbody>();
+        control = GameObject.FindGameObjectWithTag("GameController").
+                                                        GetComponent<GameController>();
+        soundControl = GameObject.FindGameObjectWithTag("SoundController").
+                                                        GetComponent<SoundController>();
     }
 
     private void OnEnable()
@@ -30,18 +35,22 @@ public class AsteroidMovement : MonoBehaviour {
         if (other.gameObject.CompareTag("Player"))
         {
             gameObject.SetActive(false);
+
+            soundControl.PlayEffectSound(eSoundEffectClip.expAsteroid);
+            GameObject effect = control.GetEffect(eEffecType.expAsteroid);
+            effect.transform.position = transform.position;
+            effect.SetActive(true);
         }
         if (other.gameObject.CompareTag("PlayerBolt"))
         {
             other.gameObject.SetActive(false);
-
-            if (control == null)
-            {
-                control = GameObject.FindGameObjectWithTag("GameController").
-                                                            GetComponent<GameController>();
-            }
             control.AddScore(ScoreValue);
             gameObject.SetActive(false);
+
+            soundControl.PlayEffectSound(eSoundEffectClip.expAsteroid);
+            GameObject effect = control.GetEffect(eEffecType.expAsteroid);
+            effect.transform.position = transform.position;
+            effect.SetActive(true);
         }
     }
 
