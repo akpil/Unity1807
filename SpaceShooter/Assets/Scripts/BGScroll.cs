@@ -7,11 +7,21 @@ public class BGScroll : MonoBehaviour {
     public float Speed;
     private Vector3 rollbackAmount;
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         rb = GetComponent<Rigidbody>();
-        rb.velocity = new Vector3(0, 0, -Speed);
         rollbackAmount = new Vector3(0, 0, 40.96f);
     }
+
+    public void StopScroll()
+    {
+        rb.velocity = Vector3.zero;
+    }
+
+    public void StartScroll()
+    {
+        rb.velocity = new Vector3(0, 0, -Speed);
+    }
+
 
     private void OnTriggerEnter(Collider other)
     {

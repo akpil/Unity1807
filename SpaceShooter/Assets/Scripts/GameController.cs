@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
     [SerializeField]
@@ -11,11 +12,26 @@ public class GameController : MonoBehaviour {
     private EffectPool EffectP;
     [SerializeField]
     private int Score;
+    private MainUIController ui;
+    private Coroutine hazardRoutine;
+
+    [SerializeField]
+    private BGScroll[] BGs;
+    private bool IsGameOver;
+
+    private PlayerController player;
 	// Use this for initialization
 	void Start () {
-        StartCoroutine(Hazards());
+        IsGameOver = false;
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        hazardRoutine = StartCoroutine(Hazards());
+        for (int i = 0; i < BGs.Length; i++)
+        {
+            BGs[i].StartScroll();
+        }
         Score = 0;
-
+        ui = GameObject.FindGameObjectWithTag("UI").GetComponent<MainUIController>();
+        ui.SetScore(Score);
     }
 
     public GameObject GetEffect(eEffecType input)
@@ -23,9 +39,42 @@ public class GameController : MonoBehaviour {
         return EffectP.GetFromPool(input);
     }
 
+    public void GameOver()
+    {
+        StopCoroutine(hazardRoutine);
+        Invoke("WaitGameOver", 5);
+    }
+    private void WaitGameOver()
+    {
+        for (int i = 0; i < BGs.Length; i++)
+        {
+            BGs[i].StopScroll();
+        }
+        ui.SetGameOver();
+        IsGameOver = true;
+    }
+
+    public void GameRestart()
+    {
+        //SceneManager.LoadScene(0);
+        player.transform.position = Vector3.zero;
+        player.gameObject.SetActive(true);
+
+        Score = 0;
+        ui.SetScore(Score);
+        ui.HideGameOver();
+
+        hazardRoutine = StartCoroutine(Hazards());
+        for (int i = 0; i < BGs.Length; i++)
+        {
+            BGs[i].StartScroll();
+        }
+    }
+
     public void AddScore(int value)
     {
         Score += value;
+        ui.SetScore(Score);
     }
 
     private void SpawnAsteroid()
@@ -93,5 +142,9 @@ public class GameController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+        if (IsGameOver && Input.GetKeyDown(KeyCode.R))
+        {
+            GameRestart();
+        }
 	}
 }

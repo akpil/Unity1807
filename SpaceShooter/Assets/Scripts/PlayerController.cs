@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour {
             GameObject effect = control.GetEffect(eEffecType.expPlayer);
             effect.transform.position = transform.position;
             effect.SetActive(true);
+            control.GameOver();
         }
     }
 
