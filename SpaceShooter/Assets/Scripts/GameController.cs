@@ -20,11 +20,17 @@ public class GameController : MonoBehaviour {
     private bool IsGameOver;
 
     private PlayerController player;
+
+    [SerializeField]
+    private int DefaultPlayerLife;
+    private int PlayerLife;
+
 	// Use this for initialization
 	void Start () {
         IsGameOver = false;
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-        hazardRoutine = StartCoroutine(Hazards());
+        PlayerLife = DefaultPlayerLife - 1;
+        //hazardRoutine = StartCoroutine(Hazards());
         for (int i = 0; i < BGs.Length; i++)
         {
             BGs[i].StartScroll();
@@ -32,6 +38,7 @@ public class GameController : MonoBehaviour {
         Score = 0;
         ui = GameObject.FindGameObjectWithTag("UI").GetComponent<MainUIController>();
         ui.SetScore(Score);
+        ui.SetPlayerLife(PlayerLife);
     }
 
     public GameObject GetEffect(eEffecType input)
@@ -46,12 +53,23 @@ public class GameController : MonoBehaviour {
     }
     private void WaitGameOver()
     {
-        for (int i = 0; i < BGs.Length; i++)
+        if (PlayerLife > 0)
         {
-            BGs[i].StopScroll();
+            PlayerLife--;
+            ui.SetPlayerLife(PlayerLife);
+            player.transform.position = Vector3.zero;
+            player.gameObject.SetActive(true);
+            hazardRoutine = StartCoroutine(Hazards());
         }
-        ui.SetGameOver();
-        IsGameOver = true;
+        else
+        {
+            for (int i = 0; i < BGs.Length; i++)
+            {
+                BGs[i].StopScroll();
+            }
+            ui.SetGameOver();
+            IsGameOver = true;
+        }
     }
 
     public void GameRestart()
@@ -59,6 +77,8 @@ public class GameController : MonoBehaviour {
         //SceneManager.LoadScene(0);
         player.transform.position = Vector3.zero;
         player.gameObject.SetActive(true);
+        PlayerLife = DefaultPlayerLife - 1;
+        ui.SetPlayerLife(PlayerLife);
 
         Score = 0;
         ui.SetScore(Score);

@@ -14,27 +14,43 @@ public class PlayerController : MonoBehaviour {
     private BoltPool BoltP;
     public float FireRate;
     private float currentFrieRate;
-
+    [SerializeField]
+    private int MaxHP;
+    private int currentHP;
     private SoundController soundControl;
     private GameController control;
+    private MainUIController uiControl;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         rb = GetComponent<Rigidbody>();
         currentFrieRate = 0;
         soundControl = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
         control = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+        uiControl = GameObject.FindGameObjectWithTag("UI").GetComponent<MainUIController>();
     }
+
+    private void OnEnable()
+    {
+        currentHP = MaxHP;
+        uiControl.SetPlayerHP(currentHP);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
-            gameObject.SetActive(false);
-            soundControl.PlayEffectSound(eSoundEffectClip.expPlayer);
-            GameObject effect = control.GetEffect(eEffecType.expPlayer);
-            effect.transform.position = transform.position;
-            effect.SetActive(true);
-            control.GameOver();
+            currentHP--;
+            uiControl.SetPlayerHP(currentHP);
+            if (currentHP <= 0)
+            {
+                gameObject.SetActive(false);
+                soundControl.PlayEffectSound(eSoundEffectClip.expPlayer);
+                GameObject effect = control.GetEffect(eEffecType.expPlayer);
+                effect.transform.position = transform.position;
+                effect.SetActive(true);
+                control.GameOver();
+            }
         }
     }
 

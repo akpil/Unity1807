@@ -8,7 +8,9 @@ public class MainUIController : MonoBehaviour {
     [SerializeField]
     private Text ScoreText,
                  GameOverText,
-                 RestartText;
+                 RestartText,
+                 HPText,
+                 LifeText;
 
     public void SetScore(int value)
     {
@@ -25,6 +27,16 @@ public class MainUIController : MonoBehaviour {
     {
         GameOverText.text = "";
         RestartText.gameObject.SetActive(false);
+    }
+
+    public void SetPlayerHP(int value)
+    {
+        HPText.text = string.Format("HP: {0}", value.ToString());
+    }
+
+    public void SetPlayerLife(int value)
+    {
+        LifeText.text = string.Format("X {0}", value.ToString());
     }
 
 	// Update is called once per frame
