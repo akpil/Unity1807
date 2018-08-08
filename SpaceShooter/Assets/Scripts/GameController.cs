@@ -13,6 +13,8 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     private BossPool BossP;
     private bool IsBossAlive;
+    [SerializeField]
+    private EffectPool ItemP;
 
     [SerializeField]
     private int Score;
@@ -107,6 +109,17 @@ public class GameController : MonoBehaviour {
         ui.SetScore(Score);
     }
 
+    public void AddLife()
+    {
+        PlayerLife++;
+        ui.SetPlayerLife(PlayerLife);
+    }
+
+    public void PowerUP()
+    {
+        player.PowerUP();
+    }
+
     private void SpawnAsteroid()
     {
         AsteroidMovement temp = AsteroidP.GetFromPool(Random.Range(0, 3));
@@ -169,7 +182,13 @@ public class GameController : MonoBehaviour {
                 }
             }
             currentStageNumber++;
-            
+            for (int i = 0; i < 3; i++)
+            {
+                GameObject item = ItemP.GetFromPool((eItemType)Random.Range(0, 2));
+                item.transform.position = new Vector3(Random.Range(-5f, 5f), 0, 16);
+                item.gameObject.SetActive(true);
+            }
+
             if (currentStageNumber % BossStageGap == 0)
             {
                 yield return threeSec;

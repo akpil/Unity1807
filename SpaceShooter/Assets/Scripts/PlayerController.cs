@@ -21,10 +21,14 @@ public class PlayerController : MonoBehaviour {
     private GameController control;
     private MainUIController uiControl;
 
+    private int boltSize;
+    private float powerUpTimer;
+
 	// Use this for initialization
 	void Awake () {
         rb = GetComponent<Rigidbody>();
         currentFrieRate = 0;
+        boltSize = 1;
         soundControl = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
         control = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
         uiControl = GameObject.FindGameObjectWithTag("UI").GetComponent<MainUIController>();
@@ -54,6 +58,12 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    public void PowerUP()
+    {
+        boltSize = 3;
+        powerUpTimer += 3;
+    }
+
     // Update is called once per frame
     void Update () {
         float horizontal = Input.GetAxis("Horizontal") * Speed;
@@ -68,13 +78,24 @@ public class PlayerController : MonoBehaviour {
                                   Mathf.Clamp(rb.position.z, -4, 10));
 
         currentFrieRate -= Time.deltaTime;
+        
         if (Input.GetButton("Shoot") && currentFrieRate <=0)
         {
             Bolt temp = BoltP.GetFromPool();
             temp.transform.position = BoltPos.position;
+            temp.transform.localScale = Vector3.one * boltSize;
             temp.gameObject.SetActive(true);
             currentFrieRate = FireRate;
             soundControl.PlayEffectSound(eSoundEffectClip.shotPlayer);
+        }
+        if (powerUpTimer <= 0)
+        {
+            boltSize = 1;
+            powerUpTimer = 0;
+        }
+        else
+        {
+            powerUpTimer -= Time.deltaTime;
         }
 	}
 }
