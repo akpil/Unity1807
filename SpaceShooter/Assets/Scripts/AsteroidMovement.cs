@@ -54,6 +54,17 @@ public class AsteroidMovement : MonoBehaviour {
         }
     }
 
+    public void Bomb()
+    {
+        control.AddScore(ScoreValue);
+        gameObject.SetActive(false);
+
+        soundControl.PlayEffectSound(eSoundEffectClip.expAsteroid);
+        GameObject effect = control.GetEffect(eEffecType.expAsteroid);
+        effect.transform.position = transform.position;
+        effect.SetActive(true);
+    }
+
     // Update is called once per frame
     void Update () {
 		

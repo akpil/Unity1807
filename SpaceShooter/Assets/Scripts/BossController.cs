@@ -14,10 +14,15 @@ public class BossController : MonoBehaviour {
 
     private GameController control;
     private SoundController soundControl;
+    private MainUIController UIcontrol;
     [SerializeField]
     private int ScoreValue;
 
     private bool AttackStart;
+
+    [SerializeField]
+    private int MaxHp;
+    private int currentHP;
 
     // Use this for initialization
     void Awake()
@@ -25,6 +30,7 @@ public class BossController : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
         soundControl = GameObject.FindGameObjectWithTag("SoundController").GetComponent<SoundController>();
         control = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+        UIcontrol = GameObject.FindGameObjectWithTag("UI").GetComponent<MainUIController>();
     }
 
     public void SetBoltPool(BoltPool boltP)
@@ -35,6 +41,8 @@ public class BossController : MonoBehaviour {
     private void OnEnable()
     {
         AttackStart = false;
+        currentHP = MaxHp;
+        UIcontrol.SetHP((float)currentHP / MaxHp);
         StartCoroutine(BossPhase());
     }
 
@@ -97,6 +105,12 @@ public class BossController : MonoBehaviour {
         }
     }
 
+    public void Bomb()
+    {
+        currentHP /= 2;
+        UIcontrol.SetHP((float)currentHP / MaxHp);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("PlayerBolt"))
@@ -104,13 +118,22 @@ public class BossController : MonoBehaviour {
             other.gameObject.SetActive(false);
             if (AttackStart)
             {
-                control.AddScore(ScoreValue);
-                gameObject.SetActive(false);
+                if (currentHP > 0)
+                {
+                    currentHP--;
+                }
+                else
+                {
+                    control.AddScore(ScoreValue);
+                    control.BossDead();
+                    gameObject.SetActive(false);
 
-                soundControl.PlayEffectSound(eSoundEffectClip.expEnemy);
-                GameObject effect = control.GetEffect(eEffecType.expEnemy);
-                effect.transform.position = transform.position;
-                effect.SetActive(true);
+                    soundControl.PlayEffectSound(eSoundEffectClip.expEnemy);
+                    GameObject effect = control.GetEffect(eEffecType.expEnemy);
+                    effect.transform.position = transform.position;
+                    effect.SetActive(true);
+                }
+                UIcontrol.SetHP((float)currentHP / MaxHp);
             }
         }
     }

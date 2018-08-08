@@ -11,6 +11,10 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     private EffectPool EffectP;
     [SerializeField]
+    private BossPool BossP;
+    private bool IsBossAlive;
+
+    [SerializeField]
     private int Score;
     private MainUIController ui;
     private Coroutine hazardRoutine;
@@ -25,12 +29,17 @@ public class GameController : MonoBehaviour {
     private int DefaultPlayerLife;
     private int PlayerLife;
 
+    [SerializeField]
+    private int BossStageGap;
+    private int currentStageNumber;
+
 	// Use this for initialization
 	void Start () {
         IsGameOver = false;
+        IsBossAlive = false;
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         PlayerLife = DefaultPlayerLife - 1;
-        //hazardRoutine = StartCoroutine(Hazards());
+        hazardRoutine = StartCoroutine(Hazards());
         for (int i = 0; i < BGs.Length; i++)
         {
             BGs[i].StartScroll();
@@ -39,6 +48,7 @@ public class GameController : MonoBehaviour {
         ui = GameObject.FindGameObjectWithTag("UI").GetComponent<MainUIController>();
         ui.SetScore(Score);
         ui.SetPlayerLife(PlayerLife);
+        currentStageNumber = 1;
     }
 
     public GameObject GetEffect(eEffecType input)
@@ -111,9 +121,11 @@ public class GameController : MonoBehaviour {
     }
     private IEnumerator Hazards()
     {
+        WaitForSeconds threeSec = new WaitForSeconds(3);
+        WaitForSeconds pointTwoSec = new WaitForSeconds(.2f);
         while (true)
         {
-            yield return new WaitForSeconds(3);
+            yield return threeSec;
             int asteroidSpawnCount = 10, enemySpawnCount = 3;
             while (true)
             {
@@ -124,13 +136,13 @@ public class GameController : MonoBehaviour {
                     {
                         SpawnAsteroid();
                         asteroidSpawnCount--;
-                        yield return new WaitForSeconds(.2f);
+                        yield return pointTwoSec;
                     }
                     else
                     {
                         SpawnEnemy();
                         enemySpawnCount--;
-                        yield return new WaitForSeconds(.2f);
+                        yield return pointTwoSec;
                     }
                 }
                 else if (enemySpawnCount > 0)
@@ -138,7 +150,7 @@ public class GameController : MonoBehaviour {
                     for (int i = 0; i < enemySpawnCount; i++)
                     {
                         SpawnEnemy();
-                        yield return new WaitForSeconds(.2f);
+                        yield return pointTwoSec;
                     }
                     break;
                 }
@@ -147,7 +159,7 @@ public class GameController : MonoBehaviour {
                     for (int i = 0; i < asteroidSpawnCount; i++)
                     {
                         SpawnAsteroid();
-                        yield return new WaitForSeconds(.2f);
+                        yield return pointTwoSec;
                     }
                     break;
                 }
@@ -156,7 +168,28 @@ public class GameController : MonoBehaviour {
                     break;
                 }
             }
+            currentStageNumber++;
+            
+            if (currentStageNumber % BossStageGap == 0)
+            {
+                yield return threeSec;
+                BossController boss = BossP.GetFromPool();
+                boss.transform.position = new Vector3(0, 0, 19);
+                boss.gameObject.SetActive(true);
+                IsBossAlive = true;
+                currentStageNumber++;
+            }
+            while (IsBossAlive)
+            {
+                yield return threeSec;
+            }
+            
         }
+    }
+
+    public void BossDead()
+    {
+        IsBossAlive = false;
     }
 
 

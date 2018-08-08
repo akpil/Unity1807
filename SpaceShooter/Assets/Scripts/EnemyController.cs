@@ -118,6 +118,18 @@ public class EnemyController : MonoBehaviour {
             effect.SetActive(true);
         }
     }
+
+    public void Bomb()
+    {
+        control.AddScore(ScoreValue);
+        gameObject.SetActive(false);
+
+        soundControl.PlayEffectSound(eSoundEffectClip.expEnemy);
+        GameObject effect = control.GetEffect(eEffecType.expEnemy);
+        effect.transform.position = transform.position;
+        effect.SetActive(true);
+    }
+
     // Update is called once per frame
     void Update () {
 		

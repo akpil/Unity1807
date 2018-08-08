@@ -11,6 +11,23 @@ public class MainUIController : MonoBehaviour {
                  RestartText,
                  HPText,
                  LifeText;
+    [SerializeField]
+    private Image HPBar;
+    [SerializeField]
+    private GameObject HPBorder;
+
+    public void SetHP(float amount)
+    {
+        if (amount > 0)
+        {
+            HPBar.fillAmount = amount;
+            HPBorder.SetActive(true);
+        }
+        else
+        {
+            HPBorder.SetActive(false);
+        }
+    }
 
     public void SetScore(int value)
     {
