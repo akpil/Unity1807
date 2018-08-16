@@ -12,24 +12,40 @@ public class PlayerController : MonoBehaviour {
         animHashAttack = Animator.StringToHash("IsAttack");
 
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    public void Hit(int damage)
+    {
+        Debug.Log(string.Format("hit {0}", damage.ToString()));
+    }
+
+    public void AttackFinish()
+    {
+        anim.SetBool(AnimationHashList.AnimHashAttack, false);
+    }
+
+    public void LookRight()
+    {
+        transform.rotation = Quaternion.Euler(Vector3.zero);
+    }
+
+    public void LookLeft()
+    {
+        transform.rotation = Quaternion.Euler(Vector3.up * 180);
+    }
+
+    // Update is called once per frame
+    void Update () {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             anim.SetBool(AnimationHashList.AnimHashAttack, true);
         }
-        else if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            anim.SetBool(AnimationHashList.AnimHashAttack, false);
+            LookLeft();
         }
-        else if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            anim.SetBool(AnimationHashList.AnimHashDead, true);
+            LookRight();
         }
-        else if (Input.GetKeyDown(KeyCode.R))
-        {
-            anim.SetBool(AnimationHashList.AnimHashDead, false);
-        }
-	}
+    }
 }
