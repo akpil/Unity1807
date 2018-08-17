@@ -17,21 +17,30 @@ public class EnemyController : MonoBehaviour {
     private Rigidbody2D rb;
     private PlayerController player;
 
-    [SerializeField]
     private int MaxHP;
     private int currentHP;
     private int AP;
+    private int income;
+
+    private GameController control;
 	// Use this for initialization
 	void Awake () {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
     }
 
-    public void SetData(int hp)
+    private void Start()
+    {
+        control = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+    }
+
+    public void SetData(int hp, int money)
     {
         MaxHP = hp;
         currentHP = MaxHP;
         AP = 1;
+        income = money;
+        StartCoroutine(EnemyStateM());
     }
 
     private void OnEnable()
@@ -39,8 +48,6 @@ public class EnemyController : MonoBehaviour {
         anim.SetBool(AnimationHashList.AnimHashDead, false);
         player = null;
         state = eEnemyState.SeekPlayer;
-        StartCoroutine(EnemyStateM());
-        SetData(MaxHP);
     }
 
     public void Hit(int damage)
@@ -74,12 +81,20 @@ public class EnemyController : MonoBehaviour {
                     break;
                 case eEnemyState.Dead:
                     anim.SetBool(AnimationHashList.AnimHashDead, true);
+                    control.AddMoney(income);
+                    //TODO 스코어 업데이트 등등
                     break;
                 default:
                     Debug.Log("구현되지 않은 스테이트입니다.");
                     break;
             }
             yield return pointFive;
+            if (anim.GetBool(AnimationHashList.AnimHashDead))
+            {
+                yield return one;
+                gameObject.SetActive(false);
+                break;
+            }
         }
     }
 
