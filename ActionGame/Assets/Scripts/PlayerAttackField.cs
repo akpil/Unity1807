@@ -11,7 +11,7 @@ public class PlayerAttackField : MonoBehaviour {
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
-            Debug.Log(string.Format("enemy name{0}", other.gameObject.name));
+            player.AttackTarget(other.gameObject);
         }
     }
 }

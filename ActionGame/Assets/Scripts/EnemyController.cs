@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum eEnemyState {
-    SeekPlayer, FindPlayer, AttackPlayer
+    SeekPlayer, FindPlayer, AttackPlayer, Dead
 };
 
 public class EnemyController : MonoBehaviour {
@@ -16,17 +16,40 @@ public class EnemyController : MonoBehaviour {
     private Animator anim;
     private Rigidbody2D rb;
     private PlayerController player;
+
+    [SerializeField]
+    private int MaxHP;
+    private int currentHP;
+    private int AP;
 	// Use this for initialization
 	void Awake () {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-	}
+    }
+
+    public void SetData(int hp)
+    {
+        MaxHP = hp;
+        currentHP = MaxHP;
+        AP = 1;
+    }
 
     private void OnEnable()
     {
+        anim.SetBool(AnimationHashList.AnimHashDead, false);
         player = null;
         state = eEnemyState.SeekPlayer;
         StartCoroutine(EnemyStateM());
+        SetData(MaxHP);
+    }
+
+    public void Hit(int damage)
+    {
+        currentHP -= damage;
+        if (currentHP <= 0)
+        {
+            state = eEnemyState.Dead;
+        }
     }
 
     private IEnumerator EnemyStateM()
@@ -49,6 +72,12 @@ public class EnemyController : MonoBehaviour {
                     anim.SetBool(AnimationHashList.AnimHashAttack, true);
                     yield return one;
                     break;
+                case eEnemyState.Dead:
+                    anim.SetBool(AnimationHashList.AnimHashDead, true);
+                    break;
+                default:
+                    Debug.Log("구현되지 않은 스테이트입니다.");
+                    break;
             }
             yield return pointFive;
         }
@@ -56,7 +85,6 @@ public class EnemyController : MonoBehaviour {
 
     public void Attack()
     {
-        Debug.Log("zAttack!!!");
         anim.SetBool(AnimationHashList.AnimHashAttack, false);
         player.Hit(1);
     }

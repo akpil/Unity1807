@@ -148,6 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 2
+  MaxHP: 3
 --- !u!212 &212396113775729530
 SpriteRenderer:
   m_ObjectHideFlags: 1

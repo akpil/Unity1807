@@ -5,17 +5,23 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     private Animator anim;
-    private int animHashAttack;
+    [SerializeField]
+    private int AP;
+    private int MaxHP;
+    private int currentHP;
 	// Use this for initialization
 	void Awake () {
         anim = GetComponent<Animator>();
-        animHashAttack = Animator.StringToHash("IsAttack");
-
     }
 
     public void Hit(int damage)
     {
-        Debug.Log(string.Format("hit {0}", damage.ToString()));
+        currentHP -= damage;
+    }
+
+    public void AttackTarget(GameObject target)
+    {
+        target.SendMessage("Hit", AP);
     }
 
     public void AttackFinish()

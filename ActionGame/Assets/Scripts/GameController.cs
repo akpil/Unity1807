@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameController : MonoBehaviour {
-    [SerializeField]
-    private EnemyController[] enemies;
+
+    private EnemyPool EnemyP;
     [SerializeField]
     private Transform leftSpawnPos, rightSpawnPos;
     private Coroutine enemySpawn;
 	// Use this for initialization
 	void Awake () {
-        enemies = Resources.LoadAll<EnemyController>("Enemy");
-	}
+        EnemyP = GameObject.FindGameObjectWithTag("EnemyPool").GetComponent<EnemyPool>();
+
+    }
 
     private void Start()
     {
-        //enemySpawn = StartCoroutine(SpawnEnemies());
+        enemySpawn = StartCoroutine(SpawnEnemies());
     }
 
     private IEnumerator SpawnEnemies()
@@ -24,12 +25,15 @@ public class GameController : MonoBehaviour {
         while (true)
         {
             yield return oneSec;
-            EnemyController temp1 = Instantiate(enemies[Random.Range(0, enemies.Length)],
-                                    leftSpawnPos.position, 
-                                    leftSpawnPos.rotation);
-            EnemyController temp2 = Instantiate(enemies[Random.Range(0, enemies.Length)],
-                                    rightSpawnPos.position,
-                                    rightSpawnPos.rotation);
+            EnemyController temp1 = EnemyP.GetFromPool(Random.Range(0, 2));
+            temp1.transform.rotation = leftSpawnPos.rotation;
+            temp1.transform.position = leftSpawnPos.position;
+            
+
+            EnemyController temp2 = EnemyP.GetFromPool(Random.Range(0, 2));
+            temp2.transform.rotation = rightSpawnPos.rotation;
+            temp2.transform.position = rightSpawnPos.position;
+            
         }
     }
 
