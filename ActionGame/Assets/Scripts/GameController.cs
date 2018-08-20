@@ -15,6 +15,8 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     private int money;
 
+    [SerializeField]
+    HPBarPool HPBarP;
 	// Use this for initialization
 	void Awake () {
         EnemyP = GameObject.FindGameObjectWithTag("EnemyPool").GetComponent<EnemyPool>();
@@ -34,8 +36,12 @@ public class GameController : MonoBehaviour {
         ingameUI.SetMoneyText(money);
     }
 
+    private int incomeIncreaseCount = 5;
+
     private IEnumerator SpawnEnemies()
     {
+        int spawnCount = 0;
+        int income = 1;
         WaitForSeconds oneSec = new WaitForSeconds(3);
         while (true)
         {
@@ -44,20 +50,30 @@ public class GameController : MonoBehaviour {
             temp1.transform.rotation = leftSpawnPos.rotation;
             temp1.transform.position = leftSpawnPos.position;
             temp1.gameObject.SetActive(true);
-            temp1.SetData(enemyHP,1);
+            temp1.SetData(enemyHP, income);
             
 
             EnemyController temp2 = EnemyP.GetFromPool(Random.Range(0, 2));
             temp2.transform.rotation = rightSpawnPos.rotation;
             temp2.transform.position = rightSpawnPos.position;
             temp2.gameObject.SetActive(true);
-            temp2.SetData(enemyHP,1);
-            
+            temp2.SetData(enemyHP, income);
+            spawnCount++;
+            if (incomeIncreaseCount <= spawnCount)
+            {
+                income++;
+                spawnCount -= incomeIncreaseCount;
+            }
         }
     }
 
-	// Update is called once per frame
-	void Update () {
+    public HPBar GetHPBar()
+    {
+        return HPBarP.GetFromPool();
+    }
+
+    // Update is called once per frame
+    void Update () {
 		
 	}
 }

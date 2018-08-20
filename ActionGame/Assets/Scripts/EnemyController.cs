@@ -17,12 +17,17 @@ public class EnemyController : MonoBehaviour {
     private Rigidbody2D rb;
     private PlayerController player;
 
+    [SerializeField]
+    private Transform HPPos;
+
     private int MaxHP;
     private int currentHP;
     private int AP;
     private int income;
 
     private GameController control;
+
+    private HPBar hpBar;
 	// Use this for initialization
 	void Awake () {
         anim = GetComponent<Animator>();
@@ -47,12 +52,23 @@ public class EnemyController : MonoBehaviour {
     {
         anim.SetBool(AnimationHashList.AnimHashDead, false);
         player = null;
+        hpBar = null;
         state = eEnemyState.SeekPlayer;
     }
 
     public void Hit(int damage)
     {
         currentHP -= damage;
+        if (hpBar == null)
+        {
+            hpBar = control.GetHPBar();
+            hpBar.gameObject.SetActive(true);
+        }
+        if (state != eEnemyState.Dead)
+        {
+            hpBar.ShowHP(currentHP / (float)MaxHP);
+            hpBar.transform.position = HPPos.position;
+        }
         if (currentHP <= 0)
         {
             state = eEnemyState.Dead;
@@ -82,7 +98,7 @@ public class EnemyController : MonoBehaviour {
                 case eEnemyState.Dead:
                     anim.SetBool(AnimationHashList.AnimHashDead, true);
                     control.AddMoney(income);
-                    //TODO 스코어 업데이트 등등
+                    hpBar.ShowIncome(income);
                     break;
                 default:
                     Debug.Log("구현되지 않은 스테이트입니다.");
