@@ -16,18 +16,21 @@ public class GameController : MonoBehaviour {
     private int money;
 
     [SerializeField]
-    HPBarPool HPBarP;
-	// Use this for initialization
-	void Awake () {
+    private HPBarPool HPBarP;
+    [SerializeField]
+    private PlayerController player;
+    // Use this for initialization
+    private void Awake () {
         EnemyP = GameObject.FindGameObjectWithTag("EnemyPool").GetComponent<EnemyPool>();
 
     }
 
     private void Start()
     {
+        player.SetData(11, 1);
+        ingameUI.SetMoneyText(money);
         enemyHP = 2;
         enemySpawn = StartCoroutine(SpawnEnemies());
-        ingameUI.SetMoneyText(money);
     }
 
     public void AddMoney(int income)
