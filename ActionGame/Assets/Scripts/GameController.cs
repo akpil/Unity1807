@@ -14,7 +14,9 @@ public class GameController : MonoBehaviour {
     private int enemyHP;
     [SerializeField]
     private int money;
+    private int stageMoney;
 
+    private int killCount;
     [SerializeField]
     private HPBarPool HPBarP;
     [SerializeField]
@@ -27,16 +29,25 @@ public class GameController : MonoBehaviour {
 
     private void Start()
     {
-        player.SetData(11, 1);
+        player.SetData(22, 1);
         ingameUI.SetMoneyText(money);
         enemyHP = 2;
         enemySpawn = StartCoroutine(SpawnEnemies());
+        stageMoney = 0;
+        killCount = 0;
     }
 
     public void AddMoney(int income)
     {
         money += income;
         ingameUI.SetMoneyText(money);
+        killCount++;
+        stageMoney += income;
+    }
+
+    public void GameOver()
+    {
+        ingameUI.ShowResultWindow(stageMoney, killCount);
     }
 
     private int incomeIncreaseCount = 5;

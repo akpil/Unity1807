@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private IngameUIController ui;
     [SerializeField]
+    private GameController control;
+    [SerializeField]
     private int AP;
     private int MaxHP;
     private int currentHP;
@@ -40,6 +42,7 @@ public class PlayerController : MonoBehaviour {
         if (currentHP <= 0)
         {
             anim.SetBool(AnimationHashList.AnimHashDead, true);
+            control.GameOver();
         }
     }
 

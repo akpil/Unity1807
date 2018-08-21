@@ -11,6 +11,11 @@ public class IngameUIController : MonoBehaviour {
     private GameObject[] HPSlots;
     private int HPSlotIndex;
 
+    [SerializeField]
+    private GameObject StageResultWindow;
+    [SerializeField]
+    private Text StageMoneyText, StageKillCountText;
+
 	// Use this for initialization
 	void Start () {
         HPSlotIndex = HPSlots.Length - 1;
@@ -18,6 +23,10 @@ public class IngameUIController : MonoBehaviour {
 
     public void LooseHP()
     {
+        if (HPSlotIndex < 0)
+        {
+            return;
+        }
         HPSlots[HPSlotIndex].SetActive(false);
         HPSlotIndex--;
     }
@@ -38,6 +47,13 @@ public class IngameUIController : MonoBehaviour {
     public void SetMoneyText(int value)
     {
         moneyText.text = value.ToString();
+    }
+
+    public void ShowResultWindow(int money, int killCount)
+    {
+        StageMoneyText.text = money.ToString();
+        StageKillCountText.text = killCount.ToString();
+        StageResultWindow.SetActive(true);
     }
 
 	// Update is called once per frame
