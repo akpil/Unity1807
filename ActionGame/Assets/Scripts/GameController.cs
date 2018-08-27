@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
     [SerializeField]
@@ -35,6 +36,11 @@ public class GameController : MonoBehaviour {
         enemySpawn = StartCoroutine(SpawnEnemies());
         stageMoney = 0;
         killCount = 0;
+    }
+
+    public void GoToLobby()
+    {
+        SceneManager.LoadScene(0);
     }
 
     public void AddMoney(int income)
