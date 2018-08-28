@@ -16,8 +16,22 @@ public class Element : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        PurchaseButton.onClick.AddListener(TextFunction);
+        //PurchaseButton.onClick.AddListener(TextFunction);
 
+    }
+
+    public void SetUP(ref AbilityData data)
+    {
+        TitleText.text = data.title;
+        CostText.text = data.currentCost.ToString();
+        Contents.text = string.Format(data.contents, data.level, data.level + 1);
+        icon.sprite = LobbyUIController.instance.GetIconSprite(data.inconIndex);
+    }
+
+    public void Renew(ref AbilityData data)
+    {
+        CostText.text = data.currentCost.ToString();
+        Contents.text = string.Format(data.contents, data.level, data.level + 1);
     }
 
     public void TextFunction()

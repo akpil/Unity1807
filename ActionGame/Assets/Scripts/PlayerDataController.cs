@@ -8,9 +8,9 @@ public class PlayerDataController : MonoBehaviour {
 
     [SerializeField]
     private int maximumKillCount,
-        HP,
-        AP,
         currentMoney;
+    [SerializeField]
+    int[] abilityLevels;
     private void Awake()
     {
         if (instance == null)
@@ -25,18 +25,26 @@ public class PlayerDataController : MonoBehaviour {
                 Destroy(gameObject);
             }
         }
+        SetNewData();
     }
 
-
-    public void UpgradeHP()
+    void SetNewData()
     {
-        HP++;
+        maximumKillCount = 0;
+        currentMoney = 0;
+        abilityLevels = new int[2];
+        for (int i = 0; i < abilityLevels.Length; i++)
+        {
+            abilityLevels[i] = 0;
+        }
     }
 
-    public void UpgradeAP()
+
+    public void UpgradeAbility(int index)
     {
-        AP++;
+        abilityLevels[index]++;
     }
+
 
     public void AddMoney(int value)
     {
@@ -75,13 +83,8 @@ public class PlayerDataController : MonoBehaviour {
     {
         return currentMoney;
     }
-    public int GetHP()
+    public int GetAbilityLevel(int index)
     {
-        return HP;
+        return abilityLevels[index];
     }
-    public int GetAP()
-    {
-        return AP;
-    }
-
 }
