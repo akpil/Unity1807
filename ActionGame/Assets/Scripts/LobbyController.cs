@@ -7,8 +7,22 @@ public class LobbyController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+        StartCoroutine(Init());
 	}
+
+    private IEnumerator Init()
+    {
+        WaitForSeconds point2 = new WaitForSeconds(.2f);
+        while (!PlayerDataController.instance.IsLoadFinish())
+        {
+            yield return point2;
+        }
+        for (int i = 0; i < AbilityController.instance.GetAbilityLength() ; i++)
+        {
+            AbilityData data = AbilityController.instance.GetData(i);
+            LobbyUIController.instance.SetupAbilityData(i, ref data);
+        }
+    }
 
     public void GameStart()
     {
@@ -25,9 +39,9 @@ public class LobbyController : MonoBehaviour {
     {
         if (PlayerDataController.instance.UseMoney(cost))
         {
-            PlayerDataController.instance.UpgradeHP();
+            //PlayerDataController.instance.UpgradeHP();
             LobbyUIController.instance.SetMoney(PlayerDataController.instance.GetMoney());
-            LobbyUIController.instance.SetHP(PlayerDataController.instance.GetHP());
+            //LobbyUIController.instance.SetHP(PlayerDataController.instance.GetHP());
         }
     }
 

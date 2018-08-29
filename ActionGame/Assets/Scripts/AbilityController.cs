@@ -46,6 +46,16 @@ public class AbilityController : MonoBehaviour {
 		
 	}
 
+    public int GetAbilityLength()
+    {
+        return abilityDataList.Length;
+    }
+
+    public AbilityData GetData(int index)
+    {
+        return abilityDataList[index];
+    }
+
     public void RenewAbilityData(int index, int level)
     {
         abilityDataList[index].level += level;

@@ -11,10 +11,13 @@ public class PlayerDataController : MonoBehaviour {
         currentMoney;
     [SerializeField]
     int[] abilityLevels;
+    private bool isLoaded;
+
     private void Awake()
     {
         if (instance == null)
         {
+            isLoaded = false;
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
@@ -39,6 +42,20 @@ public class PlayerDataController : MonoBehaviour {
         }
     }
 
+    private void Start()
+    {
+        for (int i = 0; i < abilityLevels.Length; i++)
+        {
+            AbilityController.instance.RenewAbilityData(i, abilityLevels[i]);            
+        }
+        isLoaded = true;
+    }
+
+
+    public bool IsLoadFinish()
+    {
+        return isLoaded;
+    }
 
     public void UpgradeAbility(int index)
     {
