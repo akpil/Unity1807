@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum eAbilityTypes
+{
+    HP, AP
+}
+
 public class AbilityController : MonoBehaviour {
     public static AbilityController instance;
 
@@ -31,6 +36,9 @@ public class AbilityController : MonoBehaviour {
         abilityDataList[0].baseCost = 10;
         abilityDataList[0].costWeight = 1.1f;
         abilityDataList[0].inconIndex = 0;
+        abilityDataList[0].baseAbilityEffect = 11;
+        abilityDataList[0].currentAbilityEffect = 0;
+        abilityDataList[0].effectWeight = 2;
 
         abilityDataList[1] = new AbilityData();
         abilityDataList[1].title = "공격력강화";
@@ -39,6 +47,9 @@ public class AbilityController : MonoBehaviour {
         abilityDataList[1].baseCost = 15;
         abilityDataList[1].costWeight = 1.05f;
         abilityDataList[1].inconIndex = 1;
+        abilityDataList[1].baseAbilityEffect = 1;
+        abilityDataList[1].currentAbilityEffect = 0;
+        abilityDataList[1].effectWeight = 1;
     }
 
     // Use this for initialization
@@ -56,12 +67,25 @@ public class AbilityController : MonoBehaviour {
         return abilityDataList[index];
     }
 
+    public int GetCurrentAbilityData(int index)
+    {
+        return abilityDataList[index].currentAbilityEffect;
+    }
+
+    public int GetCurrentAbilityCost(int index)
+    {
+        return abilityDataList[index].currentCost;
+    }
+
     public void RenewAbilityData(int index, int level)
     {
         abilityDataList[index].level += level;
         abilityDataList[index].currentCost = (int)(abilityDataList[index].baseCost *
                                                    Mathf.Pow(abilityDataList[index].costWeight,
                                                              abilityDataList[index].level));
+        abilityDataList[index].currentAbilityEffect = abilityDataList[index].baseAbilityEffect +
+                                                        abilityDataList[index].effectWeight *
+                                                        abilityDataList[index].level;
     }
 
     // Update is called once per frame

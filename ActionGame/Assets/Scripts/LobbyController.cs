@@ -4,9 +4,16 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class LobbyController : MonoBehaviour {
+    public static LobbyController instance;
 
-	// Use this for initialization
-	void Start () {
+    private void Awake()
+    {
+        instance = this;
+    }
+
+
+    // Use this for initialization
+    void Start () {
         StartCoroutine(Init());
 	}
 
@@ -22,6 +29,9 @@ public class LobbyController : MonoBehaviour {
             AbilityData data = AbilityController.instance.GetData(i);
             LobbyUIController.instance.SetupAbilityData(i, ref data);
         }
+        LobbyUIController.instance.SetHP(
+            AbilityController.instance.GetCurrentAbilityData((int)eAbilityTypes.HP));
+        LobbyUIController.instance.SetMoney(PlayerDataController.instance.GetMoney());
     }
 
     public void GameStart()
@@ -35,13 +45,18 @@ public class LobbyController : MonoBehaviour {
         LobbyUIController.instance.SetMoney(PlayerDataController.instance.GetMoney());
     }
 
-    public void UpgradeHP(int cost)
+    public void UpgradeAbility(int index)
     {
-        if (PlayerDataController.instance.UseMoney(cost))
+        if (PlayerDataController.instance.UseMoney(
+                                AbilityController.instance.GetCurrentAbilityCost(index)))
         {
-            //PlayerDataController.instance.UpgradeHP();
-            LobbyUIController.instance.SetMoney(PlayerDataController.instance.GetMoney());
-            //LobbyUIController.instance.SetHP(PlayerDataController.instance.GetHP());
+            AbilityController.instance.RenewAbilityData(index, 1);
+            AbilityData data = AbilityController.instance.GetData(index);
+            LobbyUIController.instance.RenewAbilityData(index, ref data);
+        }
+        else
+        {
+
         }
     }
 

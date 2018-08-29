@@ -14,10 +14,14 @@ public class Element : MonoBehaviour {
     [SerializeField]
     private Button PurchaseButton;
 
+    [SerializeField]
+    int index;
+    [SerializeField]
+    bool isAbility;
+
 	// Use this for initialization
 	void Start () {
-        //PurchaseButton.onClick.AddListener(TextFunction);
-
+        PurchaseButton.onClick.AddListener(Upgrade);
     }
 
     public void SetUP(ref AbilityData data)
@@ -34,10 +38,11 @@ public class Element : MonoBehaviour {
         Contents.text = string.Format(data.contents, data.level, data.level + 1);
     }
 
-    public void TextFunction()
+    public void Upgrade()
     {
-        Debug.Log("Button Click Test");
+        LobbyUIController.instance.UpgradeMenu(index, isAbility);
     }
+
 
 	// Update is called once per frame
 	void Update () {

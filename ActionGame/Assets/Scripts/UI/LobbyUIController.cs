@@ -56,10 +56,12 @@ public class LobbyUIController : MonoBehaviour {
         HPText.text = value.ToString();
     }
 
-    public void UpgradeManue(int index)
+    public void UpgradeMenu(int index, bool isAbility)
     {
-        //TODO HP AP Upgrade function
-        //reflect UI view
+        if (isAbility)
+        {
+            LobbyController.instance.UpgradeAbility(index);
+        }
     }
 	
 	// Update is called once per frame
