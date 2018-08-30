@@ -13,6 +13,7 @@ public class AbilityData{
 
     public int inconIndex;
 
+    public eAbilityTypes type;
     public int baseAbilityEffect;
     public int currentAbilityEffect;
     public int effectWeight;

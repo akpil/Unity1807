@@ -61,6 +61,7 @@ public class LobbyUIController : MonoBehaviour {
         if (isAbility)
         {
             LobbyController.instance.UpgradeAbility(index);
+
         }
     }
 	

@@ -28,9 +28,16 @@ public class LobbyController : MonoBehaviour {
         {
             AbilityData data = AbilityController.instance.GetData(i);
             LobbyUIController.instance.SetupAbilityData(i, ref data);
+            switch (data.type)
+            {
+                case eAbilityTypes.HP:
+                    LobbyUIController.instance.SetHP(data.currentAbilityEffect);
+                    break;
+                default:
+                    Debug.Log(string.Format("unimplemented ability type : {0} ", data.type));
+                    break;
+            }
         }
-        LobbyUIController.instance.SetHP(
-            AbilityController.instance.GetCurrentAbilityData((int)eAbilityTypes.HP));
         LobbyUIController.instance.SetMoney(PlayerDataController.instance.GetMoney());
     }
 
@@ -45,14 +52,31 @@ public class LobbyController : MonoBehaviour {
         LobbyUIController.instance.SetMoney(PlayerDataController.instance.GetMoney());
     }
 
+    public bool UseMoney(int cost)
+    {
+        bool result;
+        result = PlayerDataController.instance.UseMoney(cost);
+        LobbyUIController.instance.SetMoney(PlayerDataController.instance.GetMoney());
+        return result;
+    }
+
     public void UpgradeAbility(int index)
     {
-        if (PlayerDataController.instance.UseMoney(
-                                AbilityController.instance.GetCurrentAbilityCost(index)))
+        if (UseMoney(AbilityController.instance.GetCurrentAbilityCost(index)))
         {
             AbilityController.instance.RenewAbilityData(index, 1);
-            AbilityData data = AbilityController.instance.GetData(index);
-            LobbyUIController.instance.RenewAbilityData(index, ref data);
+            AbilityData RenewedAbility = AbilityController.instance.GetData(index);
+            LobbyUIController.instance.RenewAbilityData(index, ref RenewedAbility);
+            switch (RenewedAbility.type)
+            {
+                case eAbilityTypes.HP:
+                    LobbyUIController.instance.SetHP(RenewedAbility.currentAbilityEffect);
+                    break;
+                case eAbilityTypes.AP:
+                    break;
+                default:
+                    break;
+            }
         }
         else
         {

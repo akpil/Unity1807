@@ -20,19 +20,33 @@ public class PlayerController : MonoBehaviour {
         anim = GetComponent<Animator>();
     }
 
-    public void SetData(int _MaxHP, int _AP)
+    public void SetData()
     {
-        MaxHP = _MaxHP;
-        currentHP = MaxHP;
-        HPLooseGap = MaxHP / MaxHPSlot;
-        currentHPLossGap = HPLooseGap;
-        AP = _AP;
+        AbilityData[] abilities = AbilityController.instance.GetAllData();
+        for (int i = 0; i < abilities.Length; i++)
+        {
+            switch (abilities[i].type)
+            {
+                case eAbilityTypes.HP:
+                    MaxHP = abilities[i].currentAbilityEffect;
+                    currentHP = MaxHP;
+                    HPLooseGap = MaxHP / MaxHPSlot;
+                    currentHPLossGap = HPLooseGap;
+                    break;
+                case eAbilityTypes.AP:
+                    AP = abilities[i].currentAbilityEffect;
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public void Hit(int damage)
     {
         currentHP -= damage;
         currentHPLossGap -= damage;
+        Debug.Log(string.Format("{0}/{1}", currentHP, MaxHP));
         if (currentHPLossGap <= 0)
         {
             ui.LooseHP();

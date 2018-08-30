@@ -104,4 +104,13 @@ public class PlayerDataController : MonoBehaviour {
     {
         return abilityLevels[index];
     }
+    public int GetMaximumKillCount()
+    {
+        return maximumKillCount;
+    }
+
+    public void SetMaximumKillCount(int count)
+    {
+        maximumKillCount = count;
+    }
 }

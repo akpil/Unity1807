@@ -40,6 +40,7 @@ public class Element : MonoBehaviour {
 
     public void Upgrade()
     {
+        Debug.Log("Purchase click");
         LobbyUIController.instance.UpgradeMenu(index, isAbility);
     }
 

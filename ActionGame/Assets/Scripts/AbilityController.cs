@@ -36,6 +36,7 @@ public class AbilityController : MonoBehaviour {
         abilityDataList[0].baseCost = 10;
         abilityDataList[0].costWeight = 1.1f;
         abilityDataList[0].inconIndex = 0;
+        abilityDataList[0].type = eAbilityTypes.HP;
         abilityDataList[0].baseAbilityEffect = 11;
         abilityDataList[0].currentAbilityEffect = 0;
         abilityDataList[0].effectWeight = 2;
@@ -47,6 +48,7 @@ public class AbilityController : MonoBehaviour {
         abilityDataList[1].baseCost = 15;
         abilityDataList[1].costWeight = 1.05f;
         abilityDataList[1].inconIndex = 1;
+        abilityDataList[1].type = eAbilityTypes.AP;
         abilityDataList[1].baseAbilityEffect = 1;
         abilityDataList[1].currentAbilityEffect = 0;
         abilityDataList[1].effectWeight = 1;
@@ -65,6 +67,11 @@ public class AbilityController : MonoBehaviour {
     public AbilityData GetData(int index)
     {
         return abilityDataList[index];
+    }
+
+    public AbilityData[] GetAllData()
+    {
+        return abilityDataList;
     }
 
     public int GetCurrentAbilityData(int index)
